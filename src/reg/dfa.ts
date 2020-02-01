@@ -7,13 +7,12 @@ const random = new Random(MersenneTwister19937.autoSeed());
 export class DFANode {
   readonly _id: number;
   isEnd: boolean = false;
-  nfaSet: Set<NFANode>;
   trans: { [key: string]: DFANode } = {};
 
   constructor(_id: number, nodes: NFANode[]) {
     this._id = _id;
-    this.nfaSet = new Set(nodes);
-    for (let nfanode of this.nfaSet) {
+    const nfaSet = new Set(nodes);
+    for (let nfanode of nfaSet) {
       if (nfanode.isEnd) {
         this.isEnd = true;
         break;
@@ -22,14 +21,21 @@ export class DFANode {
   }
 
   link(w: string, v: DFANode) {
-    if (!!this.trans[w]) {
+    if (!!Reflect.has(this.trans, w)) {
       throw new Error('DFA has two same trans');
     }
     this.trans[w] = v;
   }
+
+  next(w: string) {
+    if (!Reflect.has(this.trans, w)) {
+      return undefined;
+    }
+    return this.trans[w];
+  }
 }
 
-export default class DFA {
+export class DFA {
   readonly root: DFANode;
 
   constructor(nfaRoot: NFANode) {
@@ -123,5 +129,18 @@ export default class DFA {
         }
       }
     }
+  }
+
+  test(text: string) {
+    let cur: DFANode = this.root;
+    for (const c of text) {
+      const next = cur.next(c);
+      if (next !== undefined) {
+        cur = next;
+      } else {
+        return false;
+      }
+    }
+    return cur.isEnd;
   }
 }
