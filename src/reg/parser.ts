@@ -7,41 +7,66 @@ export function parse(text: string) {
   }
 
   let pos = 0;
-  let curChar = text[0];
+  let curChar: string | undefined = text[0];
 
-  function nextChar(ch: string | null = null) {
-    if (ch) {
-      assert(curChar === ch);
-    }
+  function nextChar(ch: string) {
+    assert(curChar === ch);
     pos++;
     if (pos >= text.length) {
-      return null;
+      return (curChar = undefined);
     } else {
       return (curChar = text[pos]);
     }
   }
 
-  const root = new NFANode();
-  let curNode = root;
+  function peekChar() {
+    if (pos + 1 < text.length) {
+      return text[pos + 1];
+    } else {
+      return undefined;
+    }
+  }
+
+  function range(fa: NFANode) {
+    const ed = new NFANode();
+    while (curChar && curChar !== ']') {
+      if (peekChar() === '-') {
+        const left = curChar;
+        nextChar(curChar);
+        nextChar('-');
+        const right = curChar;
+        nextChar(curChar);
+        for (let i = left.charCodeAt(0); i <= right.charCodeAt(0); i++) {
+          fa.link(String.fromCharCode(i), ed);
+        }
+      } else {
+        fa.link(curChar, ed);
+        nextChar(curChar);
+      }
+    }
+    return ed;
+  }
 
   function factor(fa: NFANode) {
     let tot = new NFANode();
-    if (curChar == '\\') {
+    if (curChar === '\\') {
       nextChar('\\');
       fa.link(curChar, tot);
       nextChar(curChar);
-    } else if (curChar == '[') {
+    } else if (curChar === '[') {
       nextChar('[');
-
+      tot = range(fa);
       nextChar(']');
-    } else if (curChar == '(') {
+    } else if (curChar === '(') {
       nextChar('(');
       fa.link(Epsilon, tot);
       tot = expr(tot);
       nextChar(')');
-    } else {
+    } else if (curChar) {
       fa.link(curChar, tot);
       nextChar(curChar);
+    } else {
+      console.error('factor?');
     }
     return tot;
   }
@@ -56,26 +81,30 @@ export function parse(text: string) {
     return tot;
   }
 
-  function expr(fa: NFANode) {
-    const tot = term(fa);
-    if (curChar !== '|') {
-      return tot;
+  function termList(fa: NFANode) {
+    let tot = term(fa);
+    while (curChar && curChar !== '|' && curChar !== ')') {
+      tot = term(tot);
     }
+    return tot;
+  }
+
+  function expr(fa: NFANode) {
+    const tot = termList(fa);
     const ed = new NFANode();
     tot.link(Epsilon, ed);
-    while (curChar === '|') {
+    while (curChar && curChar === '|') {
       nextChar('|');
-      const tot = term(fa);
+      const tot = termList(fa);
       tot.link(Epsilon, ed);
     }
     return ed;
   }
 
-  while (pos < text.length) {
-    curNode = expr(curNode);
-  }
+  const root = new NFANode();
+  const end = expr(root);
 
-  curNode.isEnd = true;
+  end.isEnd = true;
 
   return root;
 }

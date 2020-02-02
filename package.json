@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "yarn tsc",
-    "lint": "yarn prettier --parser typescript --write src/**/*.ts"
+    "lint": "yarn prettier --parser typescript --write src/**/*.ts",
+    "test": "yarn jest"
   },
   "husky": {
     "hooks": {
@@ -21,10 +22,13 @@
     ]
   },
   "devDependencies": {
+    "@types/jest": "^25.1.1",
     "@types/node": "^13.7.0",
     "husky": "^4.2.1",
+    "jest": "^25.1.0",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
+    "ts-jest": "^25.1.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
