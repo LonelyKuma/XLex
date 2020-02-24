@@ -1,5 +1,7 @@
 import assert from 'assert';
 import { Random, MersenneTwister19937 } from 'random-js';
+import graphviz from 'graphviz';
+
 import { Epsilon, NFANode } from './nfa';
 
 const random = new Random(MersenneTwister19937.autoSeed());
@@ -37,7 +39,8 @@ export class DFANode {
 
 export class DFA {
   readonly root: DFANode;
-  readonly size: number;
+  readonly nodes: DFANode[] = [];
+  readonly alphaBet: string[];
 
   constructor(nfaRoot: NFANode) {
     const hashCache: WeakMap<NFANode, number> = new WeakMap();
@@ -48,11 +51,7 @@ export class DFA {
       return hashCache.get(node) as number;
     }
     function hashSet(nodes: NFANode[]) {
-      let val = 0;
-      for (const node of nodes) {
-        val ^= getHash(node);
-      }
-      return val;
+      return nodes.reduce((v, node) => v ^ getHash(node), 0);
     }
 
     const closureCache: WeakMap<NFANode, NFANode[]> = new WeakMap();
@@ -73,6 +72,7 @@ export class DFA {
       return closureCache.get(node) as NFANode[];
     }
 
+    const alphaSet = new Set<string>();
     const moveCache: WeakMap<
       NFANode[],
       { [key: string]: NFANode[] }
@@ -85,6 +85,7 @@ export class DFA {
       ) {
         return (moveCache.get(nodes) as { [key: string]: NFANode[] })[w];
       }
+      alphaSet.add(w);
       const set = new Set<NFANode>();
       for (const node of nodes) {
         if (Reflect.has(node.trans, w)) {
@@ -105,15 +106,16 @@ export class DFA {
     const queue: NFANode[][] = [];
     let totId = 0;
 
-    function getNode(nodes: NFANode[]): DFANode {
+    const getNode = (nodes: NFANode[]) => {
       const hsh = hashSet(nodes);
       if (!visited.has(hsh)) {
         const u = new DFANode(totId++, nodes);
+        this.nodes.push(u);
         visited.set(hsh, u);
         queue.push(nodes);
       }
       return visited.get(hsh) as DFANode;
-    }
+    };
 
     this.root = getNode(closure(nfaRoot));
 
@@ -131,8 +133,14 @@ export class DFA {
       }
     }
 
-    this.size = totId;
+    this.alphaBet = [...alphaSet];
   }
+
+  size() {
+    return this.nodes.length;
+  }
+
+  minimize() {}
 
   test(text: string) {
     let cur: DFANode = this.root;
@@ -145,5 +153,24 @@ export class DFA {
       }
     }
     return cur.isEnd;
+  }
+
+  draw(name: string) {
+    const g = graphviz.digraph(name);
+    for (const node of this.nodes) {
+      g.addNode(String(node._id), {
+        shape: node.isEnd ? 'doublecircle' : 'circle',
+        fillcolor: node._id === 0 ? 'grey' : 'white',
+        style: 'filled'
+      });
+    }
+    for (const node of this.nodes) {
+      for (const w of Reflect.ownKeys(node.trans)) {
+        g.addEdge(String(node._id), String(node.trans[w as string]._id), {
+          label: w
+        });
+      }
+    }
+    g.output('svg', name + '.svg');
   }
 }
