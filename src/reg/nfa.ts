@@ -5,9 +5,9 @@ export const Epsilon = '-1';
 let id = 0;
 
 export class NFANode {
-  _id: number;
+  readonly _id: number;
   isEnd: boolean = false;
-  trans: { [key: string]: NFANode[] } = {};
+  readonly trans: { [key: string]: NFANode[] } = {};
 
   constructor() {
     this._id = id++;

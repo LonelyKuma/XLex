@@ -4,16 +4,16 @@ import { DFA } from './dfa';
 
 export class Reg {
   readonly text: string;
-  readonly nfaRoot: NFANode;
-  readonly root: DFA;
+  readonly nfa: NFANode;
+  readonly dfa: DFA;
 
   constructor(s: string) {
     this.text = s;
-    this.nfaRoot = parse(s);
-    this.root = new DFA(this.nfaRoot);
+    this.nfa = parse(s);
+    this.dfa = new DFA(this.nfa);
   }
 
   test(text: string) {
-    return this.root.test(text);
+    return this.dfa.test(text);
   }
 }

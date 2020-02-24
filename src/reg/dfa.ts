@@ -6,8 +6,8 @@ const random = new Random(MersenneTwister19937.autoSeed());
 
 export class DFANode {
   readonly _id: number;
-  isEnd: boolean = false;
-  trans: { [key: string]: DFANode } = {};
+  readonly isEnd: boolean = false;
+  readonly trans: { [key: string]: DFANode } = {};
 
   constructor(_id: number, nodes: NFANode[]) {
     this._id = _id;
@@ -37,6 +37,7 @@ export class DFANode {
 
 export class DFA {
   readonly root: DFANode;
+  readonly size: number;
 
   constructor(nfaRoot: NFANode) {
     const hashCache: WeakMap<NFANode, number> = new WeakMap();
@@ -129,6 +130,8 @@ export class DFA {
         }
       }
     }
+
+    this.size = totId;
   }
 
   test(text: string) {
