@@ -1,7 +1,7 @@
 import { NFANode, Epsilon } from './nfa';
 import assert from 'assert';
 
-export function parse(text: string) {
+export function parse(text: string, name?: string) {
   if (text.length === 0) {
     throw new Error('Text can not be empty');
   }
@@ -122,7 +122,7 @@ export function parse(text: string) {
   const root = new NFANode();
   const end = expr(root);
 
-  end.isEnd = true;
+  end.setEnd(name);
 
   return root;
 }

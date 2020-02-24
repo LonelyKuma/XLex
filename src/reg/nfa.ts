@@ -6,11 +6,19 @@ let id = 0;
 
 export class NFANode {
   readonly _id: number;
-  isEnd: boolean = false;
   readonly trans: { [key: string]: NFANode[] } = {};
+  isEnd: boolean = false;
+  name?: string;
 
   constructor() {
     this._id = id++;
+  }
+
+  setEnd(name?: string) {
+    if (name) {
+      this.name = name;
+    }
+    this.isEnd = true;
   }
 
   link(w: string, node: NFANode) {

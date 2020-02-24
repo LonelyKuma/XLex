@@ -7,13 +7,25 @@ export class Reg {
   readonly nfa: NFANode;
   readonly dfa: DFA;
 
-  constructor(s: string) {
+  /**
+   * Creates an instance of Reg.
+   * @param {string} s RegExp Pattern
+   * @param {string} [name] Name of this instance
+   * @memberof Reg
+   */
+  constructor(s: string, name?: string) {
     this.text = s;
-    this.nfa = parse(s);
+    this.nfa = parse(s, name);
     this.dfa = new DFA(this.nfa);
   }
 
-  test(text: string) {
+  /**
+   * Test whether reg can accept text
+   * @param {string} text
+   * @returns {boolean}
+   * @memberof Reg
+   */
+  test(text: string): boolean {
     return this.dfa.test(text);
   }
 }
