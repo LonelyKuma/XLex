@@ -39,6 +39,15 @@ test('Simple Telephone Number', () => {
   expect(telephoneNumber.test('123')).toBeFalsy();
 });
 
+test('Factor?', () => {
+  const intOrFloat = new Reg('[0-9](.[0-9])?');
+  expect(intOrFloat.test('1')).toBeTruthy();
+  expect(intOrFloat.test('3.6')).toBeTruthy();
+  expect(intOrFloat.test('9.')).toBeFalsy();
+  expect(intOrFloat.test('666')).toBeFalsy();
+  expect(intOrFloat.test('8.88')).toBeFalsy();
+});
+
 test('Error Handler', () => {
   expect(() => new Reg('')).toThrow('Text can not be empty');
   expect(() => new Reg('[1-9')).toThrow('Unexpected EOF');

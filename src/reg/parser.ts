@@ -80,6 +80,9 @@ export function parse(text: string) {
       nextChar('*');
     } else if (curChar === '+') {
       nextChar('+');
+    } else if (curChar === '?') {
+      fa.link(Epsilon, tot);
+      nextChar('?');
     }
     return tot;
   }
