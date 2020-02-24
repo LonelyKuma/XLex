@@ -251,4 +251,8 @@ export class DFA {
     }
     g.output('svg', name + '.svg');
   }
+
+  getRoot() {
+    return this.root;
+  }
 }
