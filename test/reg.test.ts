@@ -48,7 +48,18 @@ test('Factor?', () => {
   expect(intOrFloat.test('8.88')).toBeFalsy();
 });
 
+test('Factor*+', () => {
+  const lowerCaseLetters = new Reg('[a-z]+');
+  expect(lowerCaseLetters.test('abcdefgh')).toBeTruthy();
+  expect(lowerCaseLetters.test('12345678')).toBeFalsy();
+  const ID = new Reg('[a-zA-Z][a-zA-Z0-9]*');
+  expect(ID.test('a')).toBeTruthy();
+  expect(ID.test('x1c')).toBeTruthy();
+  expect(ID.test('1A')).toBeFalsy();
+});
+
 test('Error Handler', () => {
   expect(() => new Reg('')).toThrow('Text can not be empty');
   expect(() => new Reg('[1-9')).toThrow('Unexpected EOF');
+  expect(() => new Reg('+5')).toThrow('Unexpected Letter +');
 });

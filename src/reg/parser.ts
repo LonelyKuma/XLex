@@ -66,6 +66,9 @@ export function parse(text: string) {
       tot = expr(tot);
       nextChar(')');
     } else if (curChar) {
+      if (curChar === '*' || curChar === '+' || curChar === '?') {
+        throw new Error(`Unexpected Letter ${curChar}`);
+      }
       fa.link(curChar, tot);
       nextChar(curChar);
     } else {
@@ -77,9 +80,18 @@ export function parse(text: string) {
   function term(fa: NFANode) {
     const tot = factor(fa);
     if (curChar === '*') {
+      const ed = new NFANode();
+      tot.link(Epsilon, fa);
+      tot.link(Epsilon, ed);
+      fa.link(Epsilon, ed);
       nextChar('*');
+      return ed;
     } else if (curChar === '+') {
+      const ed = new NFANode();
+      tot.link(Epsilon, fa);
+      tot.link(Epsilon, ed);
       nextChar('+');
+      return ed;
     } else if (curChar === '?') {
       fa.link(Epsilon, tot);
       nextChar('?');
