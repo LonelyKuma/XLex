@@ -56,6 +56,11 @@ test('Factor*+', () => {
   expect(ID.test('a')).toBeTruthy();
   expect(ID.test('x1c')).toBeTruthy();
   expect(ID.test('1A')).toBeFalsy();
+
+  const numberReg = new Reg('[0-9]+[0-9]*');
+  expect(numberReg.test('0123456789')).toBeTruthy();
+  expect(numberReg.test('abc123')).toBeFalsy();
+  expect(numberReg.test('0123xyz')).toBeFalsy();
 });
 
 test('Error Handler', () => {

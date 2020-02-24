@@ -1,23 +1,25 @@
 import assert from 'assert';
-import { Random, MersenneTwister19937 } from 'random-js';
 import graphviz from 'graphviz';
 
 import { Epsilon, NFANode } from './nfa';
-
-const random = new Random(MersenneTwister19937.autoSeed());
+import { DiffSet } from './diffSet';
 
 export class DFANode {
   readonly _id: number;
-  readonly isEnd: boolean = false;
   readonly trans: { [key: string]: DFANode } = {};
+  readonly isEnd: boolean = false;
+  readonly name?: string;
 
-  constructor(_id: number, nodes: NFANode[]) {
+  constructor(_id: number, nodes: NFANode[] | DFANode[]) {
     this._id = _id;
-    const nfaSet = new Set(nodes);
-    for (let nfanode of nfaSet) {
-      if (nfanode.isEnd) {
+    let mn = Number.MAX_VALUE;
+    for (const { _id, isEnd, name } of nodes) {
+      if (isEnd) {
         this.isEnd = true;
-        break;
+        if (_id < mn) {
+          mn = _id;
+          this.name = name;
+        }
       }
     }
   }
@@ -38,21 +40,12 @@ export class DFANode {
 }
 
 export class DFA {
-  readonly root: DFANode;
-  readonly nodes: DFANode[] = [];
-  readonly alphaBet: string[];
+  private root: DFANode;
+  private nodes: DFANode[] = [];
+  private alphaBet: string[];
 
   constructor(nfaRoot: NFANode) {
-    const hashCache: WeakMap<NFANode, number> = new WeakMap();
-    function getHash(node: NFANode) {
-      if (!hashCache.has(node)) {
-        hashCache.set(node, random.uint53Full());
-      }
-      return hashCache.get(node) as number;
-    }
-    function hashSet(nodes: NFANode[]) {
-      return nodes.reduce((v, node) => v ^ getHash(node), 0);
-    }
+    const hSet = new DiffSet<NFANode>();
 
     const closureCache: WeakMap<NFANode, NFANode[]> = new WeakMap();
     function closure(node: NFANode): NFANode[] {
@@ -107,7 +100,7 @@ export class DFA {
     let totId = 0;
 
     const getNode = (nodes: NFANode[]) => {
-      const hsh = hashSet(nodes);
+      const hsh = hSet.getSet(nodes);
       if (!visited.has(hsh)) {
         const u = new DFANode(totId++, nodes);
         this.nodes.push(u);
@@ -126,6 +119,7 @@ export class DFA {
       for (const node of back) {
         for (const w of Reflect.ownKeys(node.trans)) {
           if (set.has(w as string)) continue;
+          set.add(w as string);
           const next = move(back, w as string);
           if (next.length === 0) continue;
           u.link(w as string, getNode(next));
@@ -140,7 +134,91 @@ export class DFA {
     return this.nodes.length;
   }
 
-  minimize() {}
+  minimize() {
+    const hash = new DiffSet<DFANode>();
+
+    const intersect = (x: DFANode[], y: DFANode[]) => {
+      const set = new Set(y.map(node => node._id));
+      return x.filter(node => set.has(node._id));
+    };
+
+    const complement = (x: DFANode[], y: DFANode[]) => {
+      const set = new Set(y.map(node => node._id));
+      return x.filter(node => !set.has(node._id));
+    };
+
+    const w: DFANode[][] = [
+      this.nodes.filter(node => !node.isEnd),
+      this.nodes.filter(node => node.isEnd)
+    ];
+    const hSet = new Set<number>([hash.getSet(w[0]), hash.getSet(w[1])]);
+    let p = [w[0], w[1]];
+
+    while (w.length > 0) {
+      const a = w.pop() as DFANode[];
+      hSet.delete(hash.getSet(a));
+      const set = new Set<number>(a.map(node => node._id));
+      for (const c of this.alphaBet) {
+        const x = this.nodes.filter(
+          node => c in node.trans && set.has(node.trans[c]._id)
+        );
+        const np: DFANode[][] = [];
+        for (const y of p) {
+          const xy = intersect(x, y);
+          const yx = complement(y, x);
+          if (xy.length === 0 || yx.length === 0) {
+            np.push(y);
+            continue;
+          }
+          np.push(xy);
+          np.push(yx);
+          if (hSet.has(hash.getSet(y))) {
+            let id = -1;
+            const hy = hash.getSet(y);
+            for (let i = 0; i < w.length; i++) {
+              if (hash.getSet(w[i]) === hy) {
+                id = i;
+                break;
+              }
+            }
+            assert(id !== -1);
+            hSet.delete(hy);
+            w[id] = xy;
+            w.push(yx);
+            hSet.add(hash.getSet(xy));
+            hSet.add(hash.getSet(yx));
+          } else {
+            if (xy.length <= yx.length) {
+              w.push(xy);
+              hSet.add(hash.getSet(xy));
+            } else {
+              w.push(yx);
+              hSet.add(hash.getSet(yx));
+            }
+          }
+        }
+        p = np;
+      }
+    }
+
+    const nNodes: DFANode[] = p.map((nodes, i) => new DFANode(i, nodes));
+    const map = new WeakMap<DFANode, number>();
+    p.forEach((set, i) => set.forEach(node => map.set(node, i)));
+    for (const set of p) {
+      for (const node of set) {
+        const u = nNodes[map.get(node) as number];
+        for (const w of Reflect.ownKeys(node.trans)) {
+          if (w in u.trans) continue;
+          u.link(
+            w as string,
+            nNodes[map.get(node.trans[w as string]) as number]
+          );
+        }
+      }
+    }
+    this.root = nNodes[map.get(this.root) as number];
+    this.nodes = nNodes;
+  }
 
   test(text: string) {
     let cur: DFANode = this.root;
