@@ -3,7 +3,7 @@ import assert from 'assert';
 
 export function parse(text: string) {
   if (text.length === 0) {
-    throw new Error('Text can not be empty.');
+    throw new Error('Text can not be empty');
   }
 
   let pos = 0;

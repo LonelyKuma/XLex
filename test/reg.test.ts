@@ -40,6 +40,7 @@ test('Simple Telephone Number', () => {
   expect(telephoneNumber.test('123')).toBeFalsy();
 });
 
-test('EOF Error', () => {
-  expect(() => parse('[1-9')).toThrow('Unexpected EOF');
+test('Error Handler', () => {
+  expect(() => new Reg('')).toThrow('Text can not be empty');
+  expect(() => new Reg('[1-9')).toThrow('Unexpected EOF');
 });
