@@ -1,4 +1,5 @@
 import { Reg } from '../src/index';
+import { parse } from '../src/reg/parser';
 
 test('Simple Reg', () => {
   const dog = new Reg('dog');
@@ -37,4 +38,8 @@ test('Simple Telephone Number', () => {
   expect(telephoneNumber.test('1234')).toBeTruthy();
   expect(telephoneNumber.test('0123')).toBeFalsy();
   expect(telephoneNumber.test('123')).toBeFalsy();
+});
+
+test('EOF Error', () => {
+  expect(() => parse('[1-9')).toThrow('Unexpected EOF');
 });

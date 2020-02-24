@@ -44,6 +44,9 @@ export function parse(text: string) {
         nextChar(curChar);
       }
     }
+    if (!curChar) {
+      throw new Error('Unexpected EOF');
+    }
     return ed;
   }
 
@@ -66,7 +69,7 @@ export function parse(text: string) {
       fa.link(curChar, tot);
       nextChar(curChar);
     } else {
-      console.error('factor?');
+      throw new Error('Unexpected EOF');
     }
     return tot;
   }
