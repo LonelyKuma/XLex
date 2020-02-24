@@ -10,6 +10,9 @@
     "lint": "yarn prettier --parser typescript --write src/**/*.ts",
     "test": "yarn jest"
   },
+  "bin": {
+    "xlex": "dist/cli.js"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
