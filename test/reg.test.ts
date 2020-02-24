@@ -1,5 +1,4 @@
 import { Reg } from '../src/index';
-import { parse } from '../src/reg/parser';
 
 test('Simple Reg', () => {
   const dog = new Reg('dog');
