@@ -71,6 +71,7 @@ export class Lexer {
       }
       if (c === '\n') {
         row++;
+        col = 0;
       } else {
         col++;
       }

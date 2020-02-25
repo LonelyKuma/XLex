@@ -30,8 +30,12 @@ cli
       text.push(String(data));
     });
     process.stdin.on('end', () => {
-      const result = lexer.run(text.join(''));
-      console.log(result);
+      try {
+        const result = lexer.run(text.join(''));
+        console.log(result);
+      } catch (err) {
+        console.log(err);
+      }
     });
   });
 
