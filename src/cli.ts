@@ -16,14 +16,9 @@ cli
 
 cli
   .command('', 'Generate Lexer')
-  .option('--config <config>', 'Config file path')
+  .option('--config <config>', 'Config file path', { default: 'xlex.config' })
   .action(async (option: { config: string }) => {
-    const config = await import(
-      path.resolve(
-        process.cwd(),
-        option.config ? option.config : './xlex.config'
-      )
-    );
+    const config = await import(path.resolve(process.cwd(), option.config));
     const lexer = new Lexer(config);
     const text: string[] = [];
     process.stdin.on('data', data => {
