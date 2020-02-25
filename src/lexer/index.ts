@@ -28,7 +28,7 @@ export class Token {
 }
 
 interface RuleConfig {
-  hooks: {
+  hooks?: {
     beforeCreate?: () => void;
     created?: () => void;
   };
@@ -43,7 +43,7 @@ export class Lexer {
   private hooks: {
     beforeCreate?: () => void;
     created?: () => void;
-  };
+  } = {};
 
   private readonly tokens: Array<{
     type: string;
@@ -52,8 +52,17 @@ export class Lexer {
   }> = [];
 
   constructor(config: RuleConfig) {
-    this.hooks = config.hooks;
+    if (config.hooks !== undefined) {
+      this.hooks = config.hooks;
+    }
     for (const tokenRule of config.tokens) {
+      if (!('rule' in tokenRule) || !('type' in tokenRule)) {
+        throw new Error(
+          `${JSON.stringify(
+            tokenRule
+          )} does not have attribute "type" or "rule".`
+        );
+      }
       const dfa = new DFA(parse(tokenRule.rule, tokenRule.type));
       dfa.minimize();
       this.tokens.push({
@@ -79,6 +88,11 @@ export class Lexer {
       dfa.getRoot()
     );
 
+    const reportError = (message: string) => {
+      const text = `${message}, at Row ${row} Col ${col - tot.length}.`;
+      throw new Error(text);
+    };
+
     const next = (
       cur: Array<DFANode | undefined>,
       w: string
@@ -99,22 +113,22 @@ export class Lexer {
           let token: Token | undefined = undefined;
           for (let i = 0; i < this.tokens.length; i++) {
             if (cur[i]?.isEnd) {
-              token = new Token(
-                this.tokens[i].callback({
+              try {
+                const res = this.tokens[i].callback({
                   type: this.tokens[i].type,
                   value: tot
-                }),
-                row,
-                col - tot.length,
-                tot.length
-              );
+                });
+                token = new Token(res, row, col - tot.length, tot.length);
+              } catch (error) {
+                reportError(error.message);
+              }
               break;
             }
           }
           if (token) {
             result.push(token);
           } else {
-            throw new Error(`Unexpected ending at Row ${row} Col ${col}`);
+            reportError('Unexpected ending');
           }
         }
         const [cnt, v] = next(
@@ -125,8 +139,12 @@ export class Lexer {
           cur = v;
           tot = c;
         } else {
-          cur = this.tokens.map(({ dfa }) => dfa.getRoot());
-          tot = '';
+          if (/\s/.test(c)) {
+            cur = this.tokens.map(({ dfa }) => dfa.getRoot());
+            tot = '';
+          } else {
+            reportError(`Unexpected character "${c}"`);
+          }
         }
       } else {
         cur = nxt;

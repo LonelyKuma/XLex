@@ -7,19 +7,27 @@ module.exports = {
     },
     {
       type: 'Number',
-      rule: '[0-9]+',
+      rule: '\\+?[0-9]+.?',
       callback({ type, value }) {
+        const num = Number.parseInt(value);
+        if (num >= Number.MAX_SAFE_INTEGER) {
+          throw new Error(`"${value}" is bigger than max safe integer`);
+        }
         return {
-          type, value: Number.parseInt(value)
+          type, value: num
         };
       }
     },
     {
       type: 'Float',
-      rule: '[0-9]+.[0-9]+',
+      rule: '[0-9]+.[0-9]+|.[0-9]+',
       callback({ type, value }) {
+        const num = Number.parseFloat(value)
+        if (!isFinite(num)) {
+          throw new Error(`"${value}" is not a leggal float number`);
+        }
         return {
-          type, value: Number.parseFloat(value)
+          type, value: num
         }
       }
     },
