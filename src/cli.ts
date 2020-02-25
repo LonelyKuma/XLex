@@ -15,7 +15,7 @@ cli
   });
 
 cli
-  .command('', 'Generate Lexer')
+  .command('', 'Generate Token')
   .option('--config <config>', 'Config file path', { default: 'xlex.config' })
   .action(async (option: { config: string }) => {
     const config = await import(path.resolve(process.cwd(), option.config));
