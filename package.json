@@ -1,6 +1,7 @@
 {
   "name": "xlex",
   "version": "1.0.0",
+  "description": "A Simple lexer for XLang.",
   "main": "dist/index.js",
   "author": "XLor",
   "license": "MIT",
@@ -24,6 +25,13 @@
       "git add"
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yjl9903/XLex.git"
+  },
+  "keywords": [
+    "lexer", "compiler"
+  ],
   "devDependencies": {
     "@types/graphviz": "^0.0.30",
     "@types/jest": "^25.1.1",
