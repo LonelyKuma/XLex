@@ -7,7 +7,7 @@ module.exports = {
     },
     {
       type: 'Number',
-      rule: '\\+?[0-9]+.?',
+      rule: '(\\+|-)?[0-9]+.?',
       callback({ type, value }) {
         const num = Number.parseInt(value);
         if (num >= Number.MAX_SAFE_INTEGER) {
@@ -20,7 +20,7 @@ module.exports = {
     },
     {
       type: 'Float',
-      rule: '[0-9]+.[0-9]+|.[0-9]+',
+      rule: '(\\+|-)?([0-9]+.[0-9]+|.[0-9]+)',
       callback({ type, value }) {
         const num = Number.parseFloat(value)
         if (!isFinite(num)) {

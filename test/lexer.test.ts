@@ -18,11 +18,13 @@ test('Lexer', async () => {
     new Token({ type: 'Identifier', value: 'Xy1' }, 0, 12, 3),
     new Token({ type: 'Number', value: 999 }, 1, 1, 3)
   ]);
-  expect(lexer.run('+1 +2. 3. \n +')).toStrictEqual([
+  expect(lexer.run('+1 +2. 3. \n +\n-4.\n-6.66')).toStrictEqual([
     new Token({ type: 'Number', value: 1 }, 0, 0, 2),
     new Token({ type: 'Number', value: 2 }, 0, 3, 3),
     new Token({ type: 'Number', value: 3 }, 0, 7, 2),
-    new Token({ type: 'Plus', value: '+' }, 1, 1, 1)
+    new Token({ type: 'Plus', value: '+' }, 1, 1, 1),
+    new Token({ type: 'Number', value: -4 }, 2, 0, 3),
+    new Token({ type: 'Float', value: -6.66 }, 3, 0, 5)
   ]);
 
   expect(() => lexer.run('123456789123456789123456789')).toThrow(
