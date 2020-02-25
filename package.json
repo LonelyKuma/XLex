@@ -1,6 +1,6 @@
 {
   "name": "xlex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Simple lexer for XLang.",
   "main": "dist/index.js",
   "author": "XLor",
@@ -30,7 +30,8 @@
     "url": "git+https://github.com/yjl9903/XLex.git"
   },
   "keywords": [
-    "lexer", "compiler"
+    "lexer",
+    "compiler"
   ],
   "devDependencies": {
     "@types/graphviz": "^0.0.30",
