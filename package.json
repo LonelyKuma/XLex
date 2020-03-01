@@ -1,6 +1,6 @@
 {
   "name": "xlex",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Simple lexer for XLang.",
   "main": "dist/index.js",
   "author": "XLor",
