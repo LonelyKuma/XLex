@@ -73,10 +73,9 @@ export class Lexer {
     }
   }
 
-  run(text: string): Token[] {
+  *gen(text: string): Generator<Token> {
     text = text.replace(/\r\n|\r/g, '\n') + '\n';
 
-    const result: Token[] = [];
     if (this.hooks.beforeCreate) {
       this.hooks.beforeCreate();
     }
@@ -89,7 +88,8 @@ export class Lexer {
     );
 
     const reportError = (message: string) => {
-      const text = `${message}, at Row ${row} Col ${col - tot.length}.`;
+      const text = `XLex Error: ${message}, at Row ${row} Col ${col -
+        tot.length}.`;
       throw new Error(text);
     };
 
@@ -126,7 +126,7 @@ export class Lexer {
             }
           }
           if (token) {
-            result.push(token);
+            yield token;
           } else {
             reportError('Unexpected ending');
           }
@@ -158,9 +158,16 @@ export class Lexer {
         col++;
       }
     }
-
     if (this.hooks.created) {
       this.hooks.created();
+    }
+    return new Token({ type: 'EOF', value: '' }, row, col, 0);
+  }
+
+  run(text: string): Token[] {
+    const result: Token[] = [];
+    for (const token of this.gen(text)) {
+      result.push(token);
     }
     return result;
   }

@@ -10,8 +10,9 @@ module.exports = {
       rule: '(\\+|-)?[0-9]+.?',
       callback({ type, value }) {
         const num = Number.parseInt(value);
-        if (num >= Number.MAX_SAFE_INTEGER) {
-          throw new Error(`"${value}" is bigger than max safe integer`);
+        if (num > Number.MAX_SAFE_INTEGER
+          || num < Number.MIN_SAFE_INTEGER) {
+          throw new Error(`"${value}" is not an safe integer`);
         }
         return {
           type, value: num

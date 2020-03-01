@@ -28,8 +28,26 @@ test('Lexer', async () => {
   ]);
 
   expect(() => lexer.run('123456789123456789123456789')).toThrow(
-    '"123456789123456789123456789" is bigger than max safe integer, at Row 0 Col 0.'
+    'XLex Error: "123456789123456789123456789" is not an safe integer, at Row 0 Col 0.'
   );
+  expect(() => lexer.run('-123456789123456789123456789')).toThrow(
+    'XLex Error: "-123456789123456789123456789" is not an safe integer, at Row 0 Col 0.'
+  );
+
+  const testGen = lexer.gen('1 2 3');
+  expect(testGen.next().value).toStrictEqual(
+    new Token({ type: 'Number', value: 1 }, 0, 0, 1)
+  );
+  expect(testGen.next().value).toStrictEqual(
+    new Token({ type: 'Number', value: 2 }, 0, 2, 1)
+  );
+  expect(testGen.next().value).toStrictEqual(
+    new Token({ type: 'Number', value: 3 }, 0, 4, 1)
+  );
+  expect(testGen.next().value).toStrictEqual(
+    new Token({ type: 'EOF', value: '' }, 1, 0, 0)
+  );
+  expect(testGen.next()).toStrictEqual({ done: true, value: undefined });
 });
 
 test('Lexer Error', () => {
@@ -42,9 +60,9 @@ test('Lexer Error', () => {
     ]
   });
   expect(() => unexpectedChar.run('  666')).toThrow(
-    'Unexpected character "6", at Row 0 Col 2.'
+    'XLex Error: Unexpected character "6", at Row 0 Col 2.'
   );
   expect(() => unexpectedChar.run(' Hell')).toThrow(
-    'Unexpected ending, at Row 0 Col 1.'
+    'XLex Error: Unexpected ending, at Row 0 Col 1.'
   );
 });
