@@ -27,7 +27,7 @@ cli
     process.stdin.on('end', () => {
       try {
         const result = lexer.run(text.join(''));
-        console.log(result);
+        console.log(JSON.stringify(result, null, 2));
       } catch (err) {
         console.log(err);
         process.exit(1);
