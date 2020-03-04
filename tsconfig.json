@@ -14,7 +14,9 @@
       "*": [
         "node_modules/*"
       ]
-    }
+    },
+    "declaration": true,
+    "declarationDir": "types"
   },
   "include":[
     "./src/**/*"
