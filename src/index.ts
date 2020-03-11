@@ -1,4 +1,4 @@
 import { Reg } from './reg';
-import { Lexer } from './lexer';
+import { Lexer, Token } from './lexer';
 
-export { Reg, Lexer };
+export { Reg, Lexer, Token };
