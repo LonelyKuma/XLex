@@ -39,6 +39,8 @@ interface RuleConfig {
   }>;
 }
 
+export const Comment = '__Comment__';
+
 export class Lexer {
   private hooks: {
     beforeCreate?: () => void;
@@ -107,7 +109,6 @@ export class Lexer {
     for (let i = 0; i < text.length; i++) {
       const c = text[i];
       const [cnt, nxt] = next(cur, c);
-
       if (cnt === 0) {
         if (tot.length > 0) {
           let token: Token | undefined = undefined;
@@ -126,7 +127,9 @@ export class Lexer {
             }
           }
           if (token) {
-            yield token;
+            if (token.type !== Comment) {
+              yield token;
+            }
           } else {
             reportError('Unexpected ending');
           }

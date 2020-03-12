@@ -32,6 +32,14 @@ test('Or Range Reg', () => {
   }
 });
 
+test('Range Reg', () => {
+  const punctuation = new Reg('[\\+\\[-\\]]');
+  expect(punctuation.test('[')).toBeTruthy();
+  expect(punctuation.test('\\')).toBeTruthy();
+  expect(punctuation.test(']')).toBeTruthy();
+  expect(punctuation.test('+')).toBeTruthy();
+});
+
 test('Simple Telephone Number', () => {
   const telephoneNumber = new Reg('[1-9][0-9][0-9][0-9]');
   expect(telephoneNumber.test('1234')).toBeTruthy();

@@ -23,15 +23,22 @@ test('Lexer', async () => {
     new Token({ type: 'Number', value: 2 }, 0, 4, 2),
     new Token({ type: 'Number', value: 3 }, 0, 7, 2),
     new Token({ type: 'Plus', value: '+' }, 1, 1, 1),
-    new Token({ type: 'Number', value: -4 }, 2, 0, 3),
-    new Token({ type: 'Float', value: -6.66 }, 3, 0, 5)
+    new Token({ type: 'Minus', value: '-' }, 2, 0, 1),
+    new Token({ type: 'Number', value: 4 }, 2, 1, 2),
+    new Token({ type: 'Minus', value: '-' }, 3, 0, 1),
+    new Token({ type: 'Float', value: 6.66 }, 3, 1, 4)
   ]);
+  expect(lexer.run('const a = "123";')).toStrictEqual([
+    new Token({ type: 'Identifier', value: 'const' }, 0, 0, 5),
+    new Token({ type: 'Identifier', value: 'a' }, 0, 6, 1),
+    new Token({ type: 'Assign', value: '=' }, 0, 8, 1),
+    new Token({ type: 'String', value: '123' }, 0, 10, 5),
+    new Token({ type: 'Semicolon', value: ';' }, 0, 15, 1)
+  ]);
+  expect(lexer.run('// This is a Comment')).toStrictEqual([]);
 
   expect(() => lexer.run('123456789123456789123456789')).toThrow(
     'XLex Error: "123456789123456789123456789" is not an safe integer, at Row 0 Col 0.'
-  );
-  expect(() => lexer.run('-123456789123456789123456789')).toThrow(
-    'XLex Error: "-123456789123456789123456789" is not an safe integer, at Row 0 Col 0.'
   );
 
   const testGen = lexer.gen('1 2 3');

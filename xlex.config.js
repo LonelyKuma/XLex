@@ -7,7 +7,7 @@ module.exports = {
     },
     {
       type: 'Number',
-      rule: '-?[0-9]+.?',
+      rule: '[0-9]+.?',
       callback({ type, value }) {
         const num = Number.parseInt(value);
         if (num > Number.MAX_SAFE_INTEGER
@@ -21,7 +21,7 @@ module.exports = {
     },
     {
       type: 'Float',
-      rule: '-?([0-9]+.[0-9]+|.[0-9]+)',
+      rule: '([0-9]+.[0-9]+|.[0-9]+)',
       callback({ type, value }) {
         const num = Number.parseFloat(value)
         if (!isFinite(num)) {
@@ -34,7 +34,7 @@ module.exports = {
     },
     {
       type: 'String',
-      rule: '"([ !#-~]|\\")+"',
+      rule: '"([ !#-\\[\\[-~]|\\\\\\\\|\\\\")*"',
       callback({ type, value }) {
         const str = value.replace(/\\"/g, '"');
         return {
@@ -59,7 +59,7 @@ module.exports = {
       rule: '/'
     },
     {
-      type: 'Assignment',
+      type: 'Assign',
       rule: '='
     },
     {
@@ -113,6 +113,16 @@ module.exports = {
     {
       type: 'RBrace',
       rule: '}'
+    },
+    {
+      type: 'Comment',
+      rule: '//[ -~]*',
+      callback({ type, value }) {
+        return {
+          type: '__Comment__',
+          value: value.substr(2).trim()
+        };
+      }
     }
   ]
 };

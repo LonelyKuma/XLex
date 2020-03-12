@@ -30,11 +30,14 @@ export function parse(text: string, name?: string) {
   function range(fa: NFANode) {
     const ed = new NFANode();
     while (curChar && curChar !== ']') {
+      if (curChar === '\\') {
+        nextChar(curChar);
+      }
       if (peekChar() === '-') {
         const left = curChar;
         nextChar(curChar);
         nextChar('-');
-        const right = curChar;
+        const right = curChar === '\\' ? (nextChar(curChar), curChar) : curChar;
         nextChar(curChar);
         for (let i = left.charCodeAt(0); i <= right.charCodeAt(0); i++) {
           fa.link(String.fromCharCode(i), ed);
