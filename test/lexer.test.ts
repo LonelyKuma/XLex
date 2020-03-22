@@ -29,7 +29,7 @@ test('Lexer', async () => {
     new Token({ type: 'Float', value: 6.66 }, 3, 1, 4)
   ]);
   expect(lexer.run('const a = "123";')).toStrictEqual([
-    new Token({ type: 'Identifier', value: 'const' }, 0, 0, 5),
+    new Token({ type: 'const', value: 'const' }, 0, 0, 5),
     new Token({ type: 'Identifier', value: 'a' }, 0, 6, 1),
     new Token({ type: 'Assign', value: '=' }, 0, 8, 1),
     new Token({ type: 'String', value: '123' }, 0, 10, 5),
