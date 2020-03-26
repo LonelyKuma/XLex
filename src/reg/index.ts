@@ -33,12 +33,4 @@ export class Reg {
   test(text: string): boolean {
     return this.dfa.test(text);
   }
-
-  draw(name?: string) {
-    if (!name) {
-      name = this.name ? this.name : 'RegExp';
-    }
-    this.dfa.draw(name);
-    console.log(`Generate DAG: ${name}.svg`);
-  }
 }

@@ -4,6 +4,7 @@ import path from 'path';
 import { readFileSync } from 'fs';
 import { cac } from 'cac';
 import { Reg } from './reg';
+import graphviz from 'graphviz';
 import { Lexer } from './lexer';
 
 const cli = cac('XLex');
@@ -11,7 +12,25 @@ const cli = cac('XLex');
 cli
   .command('draw <reg> [name]', 'Draw DAG of the RegExp')
   .action((reg: string, name?: string) => {
-    new Reg(reg).draw(name);
+    const r = new Reg(reg);
+    name = name ? name : 'RegExp';
+    const g = graphviz.digraph(name);
+    for (const node of r.dfa.getNodes()) {
+      g.addNode(String(node._id), {
+        shape: node.isEnd ? 'doublecircle' : 'circle',
+        fillcolor: node._id === 0 ? 'grey' : 'white',
+        style: 'filled'
+      });
+    }
+    for (const node of r.dfa.getNodes()) {
+      for (const w of Reflect.ownKeys(node.trans)) {
+        g.addEdge(String(node._id), String(node.trans[w as string]._id), {
+          label: w
+        });
+      }
+    }
+    g.output('svg', name + '.svg');
+    console.log(`Generate DAG: ${name}.svg`);
   });
 
 cli
