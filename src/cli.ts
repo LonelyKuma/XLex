@@ -18,7 +18,7 @@ cli
     for (const node of r.dfa.getNodes()) {
       g.addNode(String(node._id), {
         shape: node.isEnd ? 'doublecircle' : 'circle',
-        fillcolor: node._id === 0 ? 'grey' : 'white',
+        fillcolor: node._id === r.dfa.getRoot()._id ? 'grey' : 'white',
         style: 'filled'
       });
     }
