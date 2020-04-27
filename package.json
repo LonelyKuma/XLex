@@ -1,6 +1,6 @@
 {
   "name": "xlex",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A Simple lexer for XLang.",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
