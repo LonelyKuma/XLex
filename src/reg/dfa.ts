@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { Epsilon, NFANode } from './nfa';
-import { DiffSet } from './diffSet';
+import { SetMap, SetSet } from '@yjl9903/setmap';
 
 export class DFANode {
   readonly _id: number;
@@ -44,8 +44,6 @@ export class DFA {
   private alphaBet: string[];
 
   constructor(nfaRoot: NFANode) {
-    const hSet = new DiffSet<NFANode>();
-
     const closureCache: WeakMap<NFANode, NFANode[]> = new WeakMap();
     function closure(node: NFANode): NFANode[] {
       if (closureCache.has(node)) {
@@ -94,19 +92,18 @@ export class DFA {
       return (moveCache.get(nodes) as { [key: string]: NFANode[] })[w];
     }
 
-    const visited: Map<number, DFANode> = new Map();
+    const visited = new SetMap<NFANode, DFANode>();
     const queue: NFANode[][] = [];
     let totId = 0;
 
     const getNode = (nodes: NFANode[]) => {
-      const hsh = hSet.getSet(nodes);
-      if (!visited.has(hsh)) {
+      if (!visited.has(nodes)) {
         const u = new DFANode(totId++, nodes);
         this.nodes.push(u);
-        visited.set(hsh, u);
+        visited.add(nodes, u);
         queue.push(nodes);
       }
-      return visited.get(hsh) as DFANode;
+      return visited.get(nodes);
     };
 
     this.root = getNode(closure(nfaRoot));
@@ -134,7 +131,7 @@ export class DFA {
   }
 
   minimize() {
-    const hash = new DiffSet<DFANode>();
+    const hash = new SetSet<DFANode>();
 
     const intersect = (x: DFANode[], y: DFANode[]) => {
       const set = new Set(y.map(node => node._id));
