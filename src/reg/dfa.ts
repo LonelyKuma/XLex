@@ -133,16 +133,6 @@ export class DFA {
   minimize() {
     const hash = new SetSet<DFANode>();
 
-    const intersect = (x: DFANode[], y: DFANode[]) => {
-      const set = new Set(y.map(node => node._id));
-      return x.filter(node => set.has(node._id));
-    };
-
-    const complement = (x: DFANode[], y: DFANode[]) => {
-      const set = new Set(y.map(node => node._id));
-      return x.filter(node => !set.has(node._id));
-    };
-
     const w: DFANode[][] = [
       this.nodes.filter(node => !node.isEnd),
       this.nodes.filter(node => node.isEnd)
@@ -155,13 +145,15 @@ export class DFA {
       hSet.delete(hash.getSet(a));
       const set = new Set<number>(a.map(node => node._id));
       for (const c of this.alphaBet) {
-        const x = this.nodes.filter(
-          node => c in node.trans && set.has(node.trans[c]._id)
-        );
         const np: DFANode[][] = [];
         for (const y of p) {
-          const xy = intersect(x, y);
-          const yx = complement(y, x);
+          const xy: DFANode[] = [],
+            yx: DFANode[] = [];
+          y.forEach(node =>
+            c in node.trans && set.has(node.trans[c]._id)
+              ? xy.push(node)
+              : yx.push(node)
+          );
           if (xy.length === 0 || yx.length === 0) {
             np.push(y);
             continue;
