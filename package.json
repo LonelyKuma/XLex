@@ -1,6 +1,6 @@
 {
   "name": "xlex",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "A Simple lexer for XLang.",
   "keywords": [
     "lexer",
@@ -19,8 +19,7 @@
   },
   "files": [
     "dist",
-    "types",
-    "*"
+    "types"
   ],
   "scripts": {
     "build": "tsc",
