@@ -1,10 +1,10 @@
 import { test, expect } from 'vitest';
 
 import { Lexer, Token } from '../src/lexer';
+import config from '../xlex.config';
 
 test('Lexer', async () => {
   // @ts-ignore
-  const config = await import('../xlex.config');
   const lexer = new Lexer(config);
 
   expect(lexer.run('123')).toStrictEqual([
