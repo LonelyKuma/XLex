@@ -28,6 +28,7 @@
     "format": "prettier --write src/**/*.ts test/**/*.ts",
     "release": "bumpp --commit --push --tag && pnpm publish",
     "test": "vitest",
+    "preversion": "unbuild",
     "typecheck": "tsc --noEmit"
   },
   "husky": {
