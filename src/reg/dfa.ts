@@ -1,5 +1,3 @@
-import assert from 'assert';
-
 import { Epsilon, NFANode } from './nfa';
 import { SetMap, SetSet } from '@yjl9903/setmap';
 
@@ -68,7 +66,8 @@ export class DFA {
       { [key: string]: NFANode[] }
     > = new WeakMap();
     function move(nodes: NFANode[], w: string): NFANode[] {
-      assert(w === Epsilon || w.length === 1);
+      import.meta.vitest?.assert(w === Epsilon || w.length === 1);
+
       if (
         moveCache.has(nodes) &&
         Reflect.has(moveCache.get(nodes) as { [key: string]: NFANode[] }, w)
@@ -169,7 +168,7 @@ export class DFA {
                 break;
               }
             }
-            assert(id !== -1);
+            import.meta.vitest?.assert(id !== -1);
             hSet.delete(hy);
             w[id] = xy;
             w.push(yx);

@@ -1,4 +1,6 @@
-import { Reg } from '../src/index';
+import { test, expect } from 'vitest';
+
+import { Reg } from '../src';
 
 test('Simple Reg', () => {
   const dog = new Reg('dog');

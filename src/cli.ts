@@ -1,10 +1,9 @@
-#!/usr/bin/env node
-
 import path from 'path';
 import { readFileSync } from 'fs';
 import { cac } from 'cac';
-import { Reg } from './reg';
 import graphviz from 'graphviz';
+
+import { Reg } from './reg';
 import { Lexer } from './lexer';
 
 const cli = cac('XLex');

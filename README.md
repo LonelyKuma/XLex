@@ -1,6 +1,6 @@
 # XLex
 
-[![Actions Status](https://github.com/yjl9903/XLex/workflows/Node.js%20CI/badge.svg)](https://github.com/yjl9903/XLex/actions)
+[![Actions Status](https://github.com/LonelyKuma/XLex/workflows/Node.js%20CI/badge.svg)](https://github.com/LonelyKuma/XLex/actions)
 
 A simple lexer for XLang.
 
@@ -10,4 +10,4 @@ A simple lexer for XLang.
 
 ## License
 
-[MIT](https://github.com/yjl9903/XLex/blob/master/LICENSE)
+[MIT](https://github.com/LonelyKuma/XLex/blob/master/LICENSE)

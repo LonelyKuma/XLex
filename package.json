@@ -1,31 +1,34 @@
 {
-  "name": "xlex",
-  "version": "1.4.5",
+  "name": "@xlor/xlex",
+  "version": "1.0.0",
   "description": "A Simple lexer for XLang.",
   "keywords": [
     "lexer",
-    "compiler"
+    "compiler",
+    "XLang"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yjl9903/XLex.git"
+    "url": "git+https://github.com/LonelyKuma/XLex.git"
   },
   "license": "MIT",
   "author": "XLor",
-  "main": "dist/index.js",
-  "types": "types/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "bin": {
-    "xlex": "dist/cli.js"
+    "xlex": "xlex.mjs"
   },
   "files": [
     "dist",
-    "types"
+    "*.mjs"
   ],
   "scripts": {
-    "build": "tsc",
-    "lint": "prettier --parser typescript --write src/**/*.ts",
-    "start": "node dist/index.js",
-    "test": "jest"
+    "build": "unbuild",
+    "format": "prettier --write src/**/*.ts test/**/*.ts",
+    "release": "bumpp --commit --push --tag && pnpm publish",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "husky": {
     "hooks": {
@@ -40,19 +43,19 @@
   },
   "dependencies": {
     "@yjl9903/setmap": "^1.0.6",
-    "assert": "^2.0.0",
-    "cac": "^6.5.6",
+    "cac": "^6.7.12",
     "graphviz": "^0.0.9"
   },
   "devDependencies": {
     "@types/graphviz": "^0.0.30",
-    "@types/jest": "^25.1.1",
     "@types/node": "^13.7.0",
+    "bumpp": "^7.1.1",
     "husky": "^4.2.1",
-    "jest": "^25.1.0",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
-    "ts-jest": "^25.1.0",
-    "typescript": "^3.7.5"
-  }
+    "typescript": "^4.6.2",
+    "unbuild": "^0.7.2",
+    "vitest": "^0.8.1"
+  },
+  "packageManager": "pnpm@3.23.1"
 }

@@ -84,7 +84,7 @@ export class Lexer {
                 });
                 token = new Token(res, row, col - tot.length, tot.length);
               } catch (error) {
-                reportError(error.message);
+                reportError((error as Error).message);
               }
               break;
             }

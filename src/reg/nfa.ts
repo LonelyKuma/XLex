@@ -1,5 +1,3 @@
-import assert from 'assert';
-
 export const Epsilon = '-1';
 
 let id = 0;
@@ -22,7 +20,7 @@ export class NFANode {
   }
 
   link(w: string, node: NFANode) {
-    assert(w === Epsilon || w.length === 1);
+    import.meta.vitest?.assert(w === Epsilon || w.length === 1);
     if (!this.trans[w]) {
       this.trans[w] = [];
     }
