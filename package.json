@@ -43,9 +43,10 @@
     ]
   },
   "dependencies": {
-    "@yjl9903/setmap": "^1.0.6",
+    "@yjl9903/setmap": "^1.0.7",
     "cac": "^6.7.12",
-    "graphviz": "^0.0.9"
+    "graphviz": "^0.0.9",
+    "jiti": "^1.13.0"
   },
   "devDependencies": {
     "@types/graphviz": "^0.0.30",

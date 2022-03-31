@@ -36,7 +36,7 @@ cli
   .command('', 'Generate Token')
   .option('--config <config>', 'Config file path', { default: 'xlex.config' })
   .action(async (option: { config: string }) => {
-    const config = await import(path.resolve(process.cwd(), option.config));
+    const config = await loadConfig(option.config);
     const lexer = new Lexer(config);
     const text: string[] = [];
     process.stdin.on('data', data => {
@@ -52,6 +52,19 @@ cli
       }
     });
   });
+
+cli
+  .command('build', 'Build lexer')
+  .option('--config <config>', 'Config file path', { default: 'xlex.config' })
+  .action(async (option: { config: string }) => {
+    const config = await loadConfig(option.config);
+    new Lexer(config);
+  });
+
+async function loadConfig(file: string) {
+  const jiti = (await import('jiti')).default(__filename);
+  return (await jiti(path.resolve(process.cwd(), file))).default;
+}
 
 cli.help();
 

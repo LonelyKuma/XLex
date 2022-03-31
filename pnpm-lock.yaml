@@ -3,11 +3,12 @@ lockfileVersion: 5.3
 specifiers:
   '@types/graphviz': ^0.0.30
   '@types/node': ^13.7.0
-  '@yjl9903/setmap': ^1.0.6
+  '@yjl9903/setmap': ^1.0.7
   bumpp: ^7.1.1
   cac: ^6.7.12
   graphviz: ^0.0.9
   husky: ^4.2.1
+  jiti: ^1.13.0
   lint-staged: ^10.0.7
   prettier: ^1.19.1
   typescript: ^4.6.2
@@ -15,9 +16,10 @@ specifiers:
   vitest: ^0.8.1
 
 dependencies:
-  '@yjl9903/setmap': 1.0.6
+  '@yjl9903/setmap': 1.0.7
   cac: 6.7.12
   graphviz: 0.0.9
+  jiti: 1.13.0
 
 devDependencies:
   '@types/graphviz': 0.0.30
@@ -402,8 +404,8 @@ packages:
       '@types/node': 13.13.52
     dev: true
 
-  /@yjl9903/setmap/1.0.6:
-    resolution: {integrity: sha512-HZehrh8cwTuJUlt7Rd4ay1dhTNir4YQlzVg35q8quoewszVxpTwmddkfsvN6tRbY+rBVl4MJNFLJ8E/7pl2KgQ==}
+  /@yjl9903/setmap/1.0.7:
+    resolution: {integrity: sha512-S/MM1g7lk+CEZBDJ6dWT55XXFzPhzuUN0okPlkVdVGXaf36q2MTMz6w/BdnLw9sgxxUAdDAgUnJN28z1qmEwrw==}
     dependencies:
       random-js: 2.1.0
     dev: false
@@ -1427,7 +1429,6 @@ packages:
   /jiti/1.13.0:
     resolution: {integrity: sha512-/n9mNxZj/HDSrincJ6RP+L+yXbpnB8FybySBa+IjIaoH9FIxBbrbRT5XUbe8R7zuVM2AQqNMNDDqz0bzx3znOQ==}
     hasBin: true
-    dev: true
 
   /joycon/3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
