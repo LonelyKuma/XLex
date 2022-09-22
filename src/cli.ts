@@ -9,10 +9,13 @@ import { Lexer } from './lexer';
 const cli = cac('XLex');
 
 cli
-  .command('draw <reg> [name]', 'Draw DAG of the RegExp')
-  .action((reg: string, name?: string) => {
-    const r = new Reg(reg);
-    name = name ? name : 'RegExp';
+  .command('draw <reg>', 'Draw DAG of the RegExp')
+  .option('--name [name]', 'Output name')
+  .option('--minimize', 'Enable DFA minimize')
+  .action((reg: string, option: { name?: string; minimize?: boolean }) => {
+    const r = new Reg(reg, { minimize: option.minimize });
+    const name = option.name ? option.name : 'RegExp';
+
     const g = graphviz.digraph(name);
     for (const node of r.dfa.getNodes()) {
       g.addNode(String(node._id), {
@@ -21,6 +24,7 @@ cli
         style: 'filled'
       });
     }
+
     for (const node of r.dfa.getNodes()) {
       for (const w of Reflect.ownKeys(node.trans)) {
         g.addEdge(String(node._id), String(node.trans[w as string]._id), {

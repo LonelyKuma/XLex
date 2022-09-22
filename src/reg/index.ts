@@ -1,6 +1,6 @@
+import { DFA } from './dfa';
 import { parse } from './parser';
 import { NFANode } from './nfa';
-import { DFA } from './dfa';
 
 export class Reg {
   readonly text: string;
@@ -11,17 +11,23 @@ export class Reg {
   /**
    * Creates an instance of Reg.
    * @param {string} s RegExp Pattern
-   * @param {string} [name] Name of this instance
    * @memberof Reg
    */
-  constructor(s: string, name?: string) {
+  constructor(s: string, option: { name?: string; minimize?: boolean } = {}) {
     this.text = s;
-    if (name) {
-      this.name = name;
+    if (option.name) {
+      this.name = option.name;
     }
-    this.nfa = parse(s, name);
+
+    this.nfa = parse(s, option.name);
     this.dfa = new DFA(this.nfa);
-    this.dfa.minimize();
+    if (
+      option.minimize === undefined ||
+      option.minimize === null ||
+      option.minimize === true
+    ) {
+      this.dfa.minimize();
+    }
   }
 
   /**
